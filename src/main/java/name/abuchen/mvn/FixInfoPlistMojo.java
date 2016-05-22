@@ -22,7 +22,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.dd.plist.NSArray;
 import com.dd.plist.NSDictionary;
-import com.dd.plist.NSObject;
 import com.dd.plist.NSString;
 import com.dd.plist.PropertyListParser;
 
@@ -44,6 +43,7 @@ public class FixInfoPlistMojo extends AbstractMojo
     @Parameter(required = true)
     private Properties properties;
 
+    @Override
     public void execute() throws MojoExecutionException
     {
         Path infoPlist = Paths.get(outputDirectory.getAbsolutePath(), //
@@ -79,21 +79,7 @@ public class FixInfoPlistMojo extends AbstractMojo
 
                 if (value != null && !value.isEmpty())
                 {
-                    NSObject oldValue = dictionary.get(key);
-
-                    if (oldValue instanceof NSArray)
-                    {
-                        String[] values = value.split(","); //$NON-NLS-1$
-                        NSArray array = new NSArray(values.length);
-                        for (int ii = 0; ii < values.length; ii++)
-                            array.setValue(ii, new NSString(values[ii]));
-                        dictionary.put(key, array);
-                    }
-                    else
-                    {
-                        dictionary.put(key, new NSString(value));
-                    }
-
+                    putValue(dictionary, key, value);
                     getLog().info(MessageFormat.format("Setting property ''{0}'' to ''{1}''", key, value));
                 }
                 else
@@ -108,6 +94,24 @@ public class FixInfoPlistMojo extends AbstractMojo
         catch (Exception e)
         {
             throw new MojoExecutionException("Error reading/writing Info.plist", e);
+        }
+    }
+
+    private void putValue(NSDictionary dictionary, String key, String value)
+    {
+        boolean isArray = value.charAt(0) == '[';
+
+        if (isArray)
+        {
+            String[] values = value.substring(1, value.length() - 1).split(","); //$NON-NLS-1$
+            NSArray array = new NSArray(values.length);
+            for (int ii = 0; ii < values.length; ii++)
+                array.setValue(ii, new NSString(values[ii]));
+            dictionary.put(key, array);
+        }
+        else
+        {
+            dictionary.put(key, new NSString(value));
         }
     }
 

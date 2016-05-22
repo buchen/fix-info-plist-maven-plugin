@@ -88,6 +88,10 @@ This plugin was inspired by https://github.com/komaz/eclipse-ini-patcher
         <name>Eclipse</name>
         <value /> <!-- key 'Eclipse' will be removed because there is no value -->
       </property>
+      <property>
+        <name>CFBundleTypeExtensions</name>
+        <value>[comma,separated,array,values]</value>
+      </property>
     </properties>
   </configuration>
 </plugin>
