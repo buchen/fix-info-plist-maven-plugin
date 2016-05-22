@@ -4,7 +4,7 @@
 
 	<groupId>name.abuchen</groupId>
 	<artifactId>fix-info-plist-maven-plugin</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>Fix Info.plist Maven Plugin</name>
