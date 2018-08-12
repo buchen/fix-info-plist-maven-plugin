@@ -66,7 +66,7 @@ This plugin was inspired by https://github.com/komaz/eclipse-ini-patcher
 <plugin>
   <groupId>name.abuchen</groupId>
   <artifactId>fix-info-plist-maven-plugin</artifactId>
-  <version>1.0</version>
+  <version>1.3</version>
   <executions>
     <execution>
       <id>fix-info-plist</id>

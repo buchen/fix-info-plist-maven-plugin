@@ -140,7 +140,8 @@ public class FixInfoPlistMojo extends AbstractMojo
 
         try
         {
-            String oldHash = getMD5Checksum(archive);
+            String oldMD5Hash = getChecksum(archive, "MD5"); //$NON-NLS-1$
+            String oldSHA256Hash = getChecksum(archive, "SHA-256"); //$NON-NLS-1$
 
             URI uri = URI.create("jar:" + archive.toUri()); //$NON-NLS-1$
             try (FileSystem fs = FileSystems.newFileSystem(uri, new HashMap<String, String>()))
@@ -149,10 +150,14 @@ public class FixInfoPlistMojo extends AbstractMojo
                 Files.copy(infoPlist, fileToUpdate, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            String newHash = getMD5Checksum(archive);
+            String newMD5Hash = getChecksum(archive, "MD5"); //$NON-NLS-1$
+            String newSHA256Hash = getChecksum(archive, "SHA-256"); //$NON-NLS-1$
 
             // read artifacts.xml to update MD5 hash
-            getLog().info(MessageFormat.format("Updating binary MD5 hash from {0} to {1}", oldHash, newHash)); //$NON-NLS-1$
+            getLog().info(MessageFormat.format("Updating binary MD5 hash from {0} to {1}", //$NON-NLS-1$
+                            oldMD5Hash, newMD5Hash));
+            getLog().info(MessageFormat.format("Updating binary SHA256 hash from {0} to {1}", //$NON-NLS-1$
+                            oldSHA256Hash, newSHA256Hash));
 
             Path artifactsJAR = Paths.get(outputDirectory.getAbsolutePath(), //
                             "repository", //$NON-NLS-1$
@@ -161,8 +166,16 @@ public class FixInfoPlistMojo extends AbstractMojo
             String artifactsXML = readArtifactsXML(artifactsJAR);
 
             String messageFormat = "<property name=''download.md5'' value=''{0}''/>"; //$NON-NLS-1$
-            artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldHash),
-                            MessageFormat.format(messageFormat, newHash));
+            artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldMD5Hash),
+                            MessageFormat.format(messageFormat, newMD5Hash));
+
+            messageFormat = "<property name=''ownload.checksum.md5'' value=''{0}''/>"; //$NON-NLS-1$
+            artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldMD5Hash),
+                            MessageFormat.format(messageFormat, newMD5Hash));
+
+            messageFormat = "<property name=''download.checksum.sha-256'' value=''{0}''/>"; //$NON-NLS-1$
+            artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldSHA256Hash),
+                            MessageFormat.format(messageFormat, newSHA256Hash));
 
             updateArtifactsJAR(artifactsJAR, artifactsXML);
             updateArtifactsXZ(artifactsXML);
@@ -225,9 +238,9 @@ public class FixInfoPlistMojo extends AbstractMojo
         }
     }
 
-    private String getMD5Checksum(Path file) throws IOException, NoSuchAlgorithmException
+    private String getChecksum(Path file, String algorithm) throws IOException, NoSuchAlgorithmException
     {
-        MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
+        MessageDigest md = MessageDigest.getInstance(algorithm);
         md.update(Files.readAllBytes(file));
         byte[] digest = md.digest();
         return DatatypeConverter.printHexBinary(digest).toLowerCase(Locale.US);
