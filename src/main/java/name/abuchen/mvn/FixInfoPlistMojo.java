@@ -20,8 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
-import javax.xml.bind.DatatypeConverter;
-
+import org.apache.commons.codec.binary.Hex;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -243,6 +242,7 @@ public class FixInfoPlistMojo extends AbstractMojo
         MessageDigest md = MessageDigest.getInstance(algorithm);
         md.update(Files.readAllBytes(file));
         byte[] digest = md.digest();
-        return DatatypeConverter.printHexBinary(digest).toLowerCase(Locale.US);
+
+        return Hex.encodeHexString(digest).toLowerCase(Locale.US);
     }
 }
