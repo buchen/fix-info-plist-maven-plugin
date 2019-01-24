@@ -12,19 +12,7 @@ This plugin was inspired by https://github.com/komaz/eclipse-ini-patcher
 
 ## Configuration
 
-**First**, add the repository (if neeeded):
-
-```xml
-<pluginRepositories>
-  <pluginRepository>
-    <id>buchen-maven-repo</id>
-    <url>http://buchen.github.io/maven-repo</url>
-    <layout>default</layout>
-  </pluginRepository>
-</pluginRepositories>
-```
-
-**Second**, make sure that the two goals ```tycho-p2-director-plugin``` are attached to two different phases (here: package and verify):
+**First**, make sure that the two goals ```tycho-p2-director-plugin``` are attached to two different phases (here: package and verify):
 
 ```xml
 <plugin>
@@ -60,13 +48,13 @@ This plugin was inspired by https://github.com/komaz/eclipse-ini-patcher
 </plugin>
 ```
 
-**Finally** configure the Info.plist properties to be added/updated/removed:
+**Then** configure the Info.plist properties to be added/updated/removed:
 
 ```xml
 <plugin>
   <groupId>name.abuchen</groupId>
   <artifactId>fix-info-plist-maven-plugin</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
   <executions>
     <execution>
       <id>fix-info-plist</id>
