@@ -5,7 +5,7 @@
 
 	<groupId>name.abuchen</groupId>
 	<artifactId>fix-info-plist-maven-plugin</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.5</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>Fix Info.plist Maven Plugin (Eclipse RCP)</name>
