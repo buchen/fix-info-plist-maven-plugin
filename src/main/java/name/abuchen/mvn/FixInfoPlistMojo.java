@@ -16,7 +16,6 @@ import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -29,9 +28,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 
-import com.dd.plist.NSArray;
 import com.dd.plist.NSDictionary;
-import com.dd.plist.NSString;
 import com.dd.plist.PropertyListParser;
 
 /**
@@ -85,46 +82,13 @@ public class FixInfoPlistMojo extends AbstractMojo
         {
             NSDictionary dictionary = (NSDictionary) PropertyListParser.parse(infoPlist.toFile());
 
-            for (Map.Entry<Object, Object> entry : properties.entrySet())
-            {
-                String key = (String) entry.getKey();
-                String value = (String) entry.getValue();
-
-                if (value != null && !value.isEmpty())
-                {
-                    putValue(dictionary, key, value);
-                    getLog().info(MessageFormat.format("Setting property ''{0}'' to ''{1}''", key, value)); //$NON-NLS-1$
-                }
-                else
-                {
-                    dictionary.remove(key);
-                    getLog().info(MessageFormat.format("Removing property ''{0}''", key)); //$NON-NLS-1$
-                }
-            }
+            new PropertyReplacer().replace(getLog(), dictionary, properties);
 
             PropertyListParser.saveAsXML(dictionary, infoPlist.toFile());
         }
         catch (Exception e)
         {
             throw new MojoExecutionException("Error reading/writing Info.plist", e); //$NON-NLS-1$
-        }
-    }
-
-    private void putValue(NSDictionary dictionary, String key, String value)
-    {
-        boolean isArray = value.charAt(0) == '[';
-
-        if (isArray)
-        {
-            String[] values = value.substring(1, value.length() - 1).split(","); //$NON-NLS-1$
-            NSArray array = new NSArray(values.length);
-            for (int ii = 0; ii < values.length; ii++)
-                array.setValue(ii, new NSString(values[ii]));
-            dictionary.put(key, array);
-        }
-        else
-        {
-            dictionary.put(key, new NSString(value));
         }
     }
 

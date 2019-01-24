@@ -92,6 +92,9 @@ This plugin was inspired by https://github.com/komaz/eclipse-ini-patcher
         <name>CFBundleTypeExtensions</name>
         <value>[comma,separated,array,values]</value>
       </property>
+      <property>
+        <name>CFBundleDocumentTypes</name>
+        <value><![CDATA[<array><dict><key>CFBundleTypeIconFiles</key><array><string>rip-22x29.png</string></array></dict></array>]]</value>
     </properties>
   </configuration>
 </plugin>
