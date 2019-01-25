@@ -10,6 +10,8 @@ This plugin updates
 
 This plugin was inspired by https://github.com/komaz/eclipse-ini-patcher
 
+[![Maven Central](https://img.shields.io/maven-central/v/name.abuchen/fix-info-plist-maven-plugin.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22name.abuchen%22%20AND%20a:%22fix-info-plist-maven-plugin%22)
+
 ## Configuration
 
 **First**, make sure that the two goals ```tycho-p2-director-plugin``` are attached to two different phases (here: package and verify):
