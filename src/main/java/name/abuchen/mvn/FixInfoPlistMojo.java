@@ -136,7 +136,7 @@ public class FixInfoPlistMojo extends AbstractMojo
             artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldMD5Hash),
                             MessageFormat.format(messageFormat, newMD5Hash));
 
-            messageFormat = "<property name=''ownload.checksum.md5'' value=''{0}''/>"; //$NON-NLS-1$
+            messageFormat = "<property name=''download.checksum.md5'' value=''{0}''/>"; //$NON-NLS-1$
             artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldMD5Hash),
                             MessageFormat.format(messageFormat, newMD5Hash));
 
