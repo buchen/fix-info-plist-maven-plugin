@@ -56,24 +56,30 @@ public class FixInfoPlistMojo extends AbstractMojo
     @Override
     public void execute() throws MojoExecutionException
     {
-        Path infoPlist = Paths.get(outputDirectory.getAbsolutePath(), //
-                        "products", //$NON-NLS-1$
-                        productId, //
-                        "macosx", //$NON-NLS-1$
-                        "cocoa", //$NON-NLS-1$
-                        "x86_64", //$NON-NLS-1$
-                        appName, //
-                        "Contents", //$NON-NLS-1$
-                        "Info.plist"); //$NON-NLS-1$
+        String[] architectures = new String[] { "x86_64", "aarch64" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-        if (!Files.exists(infoPlist))
+        for (String arch : architectures)
         {
-            getLog().info("Cannot find Info.plist: " + infoPlist.toString()); //$NON-NLS-1$
-            return;
-        }
+            Path infoPlist = Paths.get(outputDirectory.getAbsolutePath(), //
+                            "products", //$NON-NLS-1$
+                            productId, //
+                            "macosx", //$NON-NLS-1$
+                            "cocoa", //$NON-NLS-1$
+                            arch, appName, //
+                            "Contents", //$NON-NLS-1$
+                            "Info.plist"); //$NON-NLS-1$
 
-        fixInfoPlist(infoPlist);
-        fixZippedBinaryArchiveInRepository(infoPlist);
+            if (!Files.exists(infoPlist))
+            {
+                getLog().info("Cannot find Info.plist: " + infoPlist.toString()); //$NON-NLS-1$
+            }
+            else
+            {
+                getLog().info("Fixing " + infoPlist.toString()); //$NON-NLS-1$
+                fixInfoPlist(infoPlist);
+                fixZippedBinaryArchiveInRepository(infoPlist, arch);
+            }
+        }
     }
 
     private void fixInfoPlist(Path infoPlist) throws MojoExecutionException
@@ -92,12 +98,12 @@ public class FixInfoPlistMojo extends AbstractMojo
         }
     }
 
-    private void fixZippedBinaryArchiveInRepository(Path infoPlist) throws MojoExecutionException
+    private void fixZippedBinaryArchiveInRepository(Path infoPlist, String arch) throws MojoExecutionException
     {
         Path archive = Paths.get(outputDirectory.getAbsolutePath(), //
                         "repository", //$NON-NLS-1$
                         "binary", //$NON-NLS-1$
-                        productId + ".executable.cocoa.macosx.x86_64_" + projectVersion); //$NON-NLS-1$
+                        productId + ".executable.cocoa.macosx." + arch + "_" + projectVersion); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (!Files.exists(archive))
         {
