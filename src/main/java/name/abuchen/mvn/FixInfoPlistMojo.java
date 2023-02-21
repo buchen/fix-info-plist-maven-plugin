@@ -115,6 +115,7 @@ public class FixInfoPlistMojo extends AbstractMojo
         {
             String oldMD5Hash = getChecksum(archive, "MD5"); //$NON-NLS-1$
             String oldSHA256Hash = getChecksum(archive, "SHA-256"); //$NON-NLS-1$
+            String oldSHA512Hash = getChecksum(archive, "SHA-512"); //$NON-NLS-1$
 
             URI uri = URI.create("jar:" + archive.toUri()); //$NON-NLS-1$
             try (FileSystem fs = FileSystems.newFileSystem(uri, new HashMap<String, String>()))
@@ -125,12 +126,15 @@ public class FixInfoPlistMojo extends AbstractMojo
 
             String newMD5Hash = getChecksum(archive, "MD5"); //$NON-NLS-1$
             String newSHA256Hash = getChecksum(archive, "SHA-256"); //$NON-NLS-1$
+            String newSHA512Hash = getChecksum(archive, "SHA-512"); //$NON-NLS-1$
 
             // read artifacts.xml to update MD5 hash
             getLog().info(MessageFormat.format("Updating binary MD5 hash from {0} to {1}", //$NON-NLS-1$
                             oldMD5Hash, newMD5Hash));
             getLog().info(MessageFormat.format("Updating binary SHA256 hash from {0} to {1}", //$NON-NLS-1$
                             oldSHA256Hash, newSHA256Hash));
+            getLog().info(MessageFormat.format("Updating binary SHA512 hash from {0} to {1}", //$NON-NLS-1$
+                            oldSHA512Hash, newSHA512Hash));
 
             Path artifactsJAR = Paths.get(outputDirectory.getAbsolutePath(), //
                             "repository", //$NON-NLS-1$
@@ -149,6 +153,10 @@ public class FixInfoPlistMojo extends AbstractMojo
             messageFormat = "<property name=''download.checksum.sha-256'' value=''{0}''/>"; //$NON-NLS-1$
             artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldSHA256Hash),
                             MessageFormat.format(messageFormat, newSHA256Hash));
+
+            messageFormat = "<property name=''download.checksum.sha-512'' value=''{0}''/>"; //$NON-NLS-1$
+            artifactsXML = artifactsXML.replace(MessageFormat.format(messageFormat, oldSHA512Hash),
+                            MessageFormat.format(messageFormat, newSHA512Hash));
 
             updateArtifactsJAR(artifactsJAR, artifactsXML);
             updateArtifactsXZ(artifactsXML);
